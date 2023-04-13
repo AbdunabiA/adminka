@@ -1,0 +1,1 @@
+export {useGetData, usePostData} from './apiHooks'
