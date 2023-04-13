@@ -5,6 +5,7 @@ const Registration = lazy(() => import("pages/auth/registration"));
 const SignIn = lazy(() => import("pages/auth/signIn"));
 const Login = lazy(() => import("pages/auth/login"));
 const Banner = lazy(() => import("pages/banner"));
+const Posts = lazy(()=>import("pages/posts"));
 
 const authRoutes = [
   {
@@ -29,7 +30,11 @@ const privateRoutes = [
   {
     path: "/banner",
     element: <Banner />,
-  }
+  },
+  {
+    path: "/posts",
+    element: <Posts />,
+  },
 ];
 
 export { authRoutes, privateRoutes };

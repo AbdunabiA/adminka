@@ -12,6 +12,11 @@ const menus = [
     label: "Banner",
   },
   {
+    key:'posts',
+    icon:<LaptopOutlined/>,
+    label: "Posts",
+  },
+  {
     key: "about",
     icon: <LaptopOutlined />,
     label: "About",
