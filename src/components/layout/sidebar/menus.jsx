@@ -8,25 +8,18 @@ const menus = [
   },
   {
     key: "banner",
-    icon:<UserOutlined/>,
+    icon: <UserOutlined />,
     label: "Banner",
   },
   {
-    key:'posts',
-    icon:<LaptopOutlined/>,
+    key: "posts",
+    icon: <LaptopOutlined />,
     label: "Posts",
   },
   {
-    key: "about",
+    key: "pages",
     icon: <LaptopOutlined />,
-    label: "About",
-    children: [
-      {
-        key: "about/inner",
-        icon: <LaptopOutlined />,
-        label: "About",
-      },
-    ],
+    label: "Pages",
   },
 ];
 

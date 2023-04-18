@@ -2,69 +2,47 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button, Modal, Switch } from "antd";
 import axios from "axios";
 import { Fields } from "components";
+import { usePost, usePut } from "crud";
 import { Field, Form, Formik } from "formik";
-import { usePostData } from "hooks";
 import { get } from "lodash";
 import React from "react";
 import { useSelector } from "react-redux";
+import * as Yup from 'yup'
 
-const form = ({ modalData, setModalData, statusChange }) => {
-  const { token } = useSelector((state) => get(state, "auth"));
-  const queryClient = useQueryClient();
+const validationSchema = Yup.object({
+  title:Yup.string().required('Title is required'),
+  description:Yup.string().required('Description is required'),
+  content:Yup.string().required('Content is required'),
+})
 
-  const postData = (values) => {
-    return axios[modalData.item ? "put" : "post"](
-      `http://api.test.uz/api/v1/admin/posts${modalData.item ? "" : "?_l=uz"}${
-        get(modalData, "item") ? `/${get(modalData, "item.id")}` : ""
-      }`,
-      values,
-      {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      }
-    );
-  };
-
-  const { mutate } = useMutation({
-    mutationFn: (values) => postData(values),
-    onSuccess: () => {
-      setModalData({ isOpen: false, item: null });
-      queryClient.invalidateQueries({ queryKey: "banner" });
-    },
-    onError: (error) => {},
-  });
+const PostForm = ({ modalData, setModalData, putForm, postForm }) => {
+  
 
 
-//   const { mutate } = usePostData(
-//     ["posts"],
-//     modalData,
-//     setModalData,
-//     token,
-//     "http://api.test.uz/api/v1/admin/posts?_l=uz/"
-//   );
+
   return (
     <Modal
-      destroyOnClose={true}
+      key={get(modalData, 'item.id')}
       title={modalData.item ? "Изменить" : "Добавить"}
       open={modalData.isOpen}
       footer={false}
       onCancel={() => setModalData({ isOpen: false, item: null })}
     >
       <Formik
+      validationSchema={validationSchema}
         initialValues={{
           title: get(modalData, "item.title", ""),
           description: get(modalData, "item.description", ""),
           content: get(modalData, "item.content", ""),
-          //   status: get(modalData, "item.status", ""),
+          status: get(modalData, "item.status", ""),
         }}
         onSubmit={(values, { resetForm }) => {
           console.log(values);
-          mutate(values);
-          resetForm();
+          modalData.item ? putForm({values, resetForm, id:modalData.item.id,}) : postForm({ values, resetForm });
+          setModalData({...modalData, isOpen:false})
         }}
       >
-        {({ values, handleSubmit }) => {
+        {({handleSubmit }) => {
           return (
             <Form>
               <Field name="title" label="Заголовок" component={Fields.Input} />
@@ -76,20 +54,15 @@ const form = ({ modalData, setModalData, statusChange }) => {
               <Field
                 name="content"
                 label="Контент"
-                component={Fields.Input}
+                component={Fields.TextArea}
                 type="textarea"
               />
-              {modalData.item ? (
-                <Switch
-                  defaultChecked={modalData?.item?.status == 1 ? true : false}
-                  onChange={() => statusChange(modalData?.item)}
-                />
-              ) : null}
-              <br />
-              <br />
-              <Button type="primary" onClick={handleSubmit}>
-                Submit
-              </Button>
+              <Field name="status" label="Status" component={Fields.Switch} />
+              <div className="flex justify-end mb-4">
+                <Button type="primary" onClick={handleSubmit}>
+                  {get(modalData, 'item') ? 'Изменть':'Создать'}
+                </Button>
+              </div>
             </Form>
           );
         }}
@@ -98,4 +71,4 @@ const form = ({ modalData, setModalData, statusChange }) => {
   );
 };
 
-export default form;
+export default PostForm;

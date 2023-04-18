@@ -5,31 +5,31 @@ const TextInput = ({
   field,
   label,
   required = false,
-  type,
-  onChange,
-  checked,
   placeholder,
-  form: { setFieldValue, errors, touched },
+  errorMessage = 'Это объязательное поле',
+  form: { setFieldValue,setFieldTouched, errors, touched },
 }) => {
+  const handleBlur=()=>{
+    if(!field.value){
+      setFieldTouched(field.name, true)
+      errors[field.name] = 'This field is required'
+    }
+  }
   return (
     <div className="mb-2">
-      {label ? <h2>{label}</h2> : null}
-      {type === "textarea" ? (
-        <Input.TextArea
-          name={field.name}
-          status={touched[field.name] && errors[field.name] && "error"}
-          value={field.value}
-          onChange={(e) => setFieldValue(field.name, e.target.value)}
-          placeholder={placeholder}
-        />
-      ) : (
-        <Input
-          name={field.name}
-          status={touched[field.name] && errors[field.name] && "error"}
-          value={field.value}
-          onChange={(e) => setFieldValue(field.name, e.target.value)}
-          placeholder={placeholder}
-        />
+      {label ? <h4>{label}</h4> : null}
+      <Input
+        name={field.name}
+        onBlur={handleBlur}
+        status={touched[field.name] && errors[field.name] && "error"}
+        value={field.value}
+        onChange={(e) => setFieldValue(field.name, e.target.value)}
+        placeholder={placeholder}
+      />
+      {touched[field.name] && errors[field.name] && (
+        <small className="text-red-500 font-semibold text-xs">
+          {errorMessage}
+        </small>
       )}
     </div>
   );

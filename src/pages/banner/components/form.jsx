@@ -3,7 +3,6 @@ import { Button, Modal } from "antd";
 import axios from "axios";
 import { Fields } from "components";
 import { Field, Form, Formik } from "formik";
-import { usePostData } from "hooks";
 import { get } from "lodash";
 import React from "react";
 import { useSelector } from "react-redux";
@@ -12,29 +11,29 @@ const form = ({ modalData, setModalData }) => {
   const { token } = useSelector((state) => get(state, "auth"));
   const queryClient = useQueryClient();
 
-  // const postData = (values) => {
-  //   return axios[modalData.item ? "put" : "post"](
-  //     `http://api.test.uz/api/v1/admin/banners/${
-  //       get(modalData, "item") ? get(modalData, "item.id") : ""
-  //     }`,
-  //     values,
-  //     {
-  //       headers: {
-  //         Authorization: "Bearer " + token,
-  //       },
-  //     }
-  //   );
-  // };
+  const postData = (values) => {
+    return axios[modalData.item ? "put" : "post"](
+      `http://api.test.uz/api/v1/admin/banners/${
+        get(modalData, "item") ? get(modalData, "item.id") : ""
+      }`,
+      values,
+      {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }
+    );
+  };
 
-  // const { mutate } = useMutation({
-  //   mutationFn: (values) => postData(values),
-  //   onSuccess: () => {
-  //     setModalData({ isOpen: false, item: null });
-  //     queryClient.invalidateQueries({ queryKey: "banner" });
-  //   },
-  //   onError: (error) => {},
-  // });
-  const {mutate} = usePostData(['banners'], modalData, setModalData, token)
+  const { mutate } = useMutation({
+    mutationFn: (values) => postData(values),
+    onSuccess: () => {
+      setModalData({ isOpen: false, item: null });
+      queryClient.invalidateQueries({ queryKey: "banner" });
+    },
+    onError: (error) => {},
+  });
+
   return (
     <Modal
       title="Basic Modal"

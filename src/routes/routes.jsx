@@ -1,9 +1,11 @@
-import React, { Suspense } from "react";
+import React, { Suspense, lazy } from "react";
 import { Layout } from "components";
 import { Route, Routes } from "react-router-dom";
 import { authRoutes, privateRoutes } from "./index";
 import { useSelector } from "react-redux";
 import { get } from "lodash";
+
+const PostPage = lazy(() => import("pages/pages/postPage"));
 
 const appRoutes = (routes) => {
   return routes.map((route, key) => (
@@ -23,8 +25,18 @@ const routesWrapper = () => {
     <Routes>
       <Route path="*" element={<h2>Not Fonund</h2>} />
       {isAuthenticated ? (
-        <Route path="/" element={<Layout />}>
-          {appRoutes(privateRoutes)}
+        <Route>
+          <Route path="/" element={<Layout />}>
+            {appRoutes(privateRoutes)}
+          </Route>
+          <Route
+            path="/pages/postPage"
+            element={
+              <Suspense fallback="LOADING...">
+                <PostPage />
+              </Suspense>
+            }
+          />
         </Route>
       ) : (
         appRoutes(authRoutes)

@@ -1,150 +1,157 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Button, Modal, Switch, Table } from "antd";
+import {
+  Button,
+  Form,
+  Modal,
+  Popconfirm,
+  Popover,
+  Switch,
+  Table,
+  Tooltip,
+  message,
+  notification,
+} from "antd";
 import axios from "axios";
-import { get } from "lodash";
+import { Fields } from "components";
+import { Field, Formik } from "formik";
+import { get, truncate } from "lodash";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import Form from "./components/form";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { useGetData } from "hooks";
+import PostForm from "./components/form";
+import { useDelete, useGet, usePut, usePost } from "crud";
+
 const index = () => {
   const { token } = useSelector((state) => get(state, "auth"));
   const [modalData, setModalData] = useState({
     isOpen: false,
     item: null,
   });
-  const queryClient = useQueryClient();
 
-  const { mutate: deleteHandler } = useMutation({
-    mutationFn: (id) => {
-      axios.delete(`http://api.test.uz/api/v1/admin/posts/${id}`, {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: "posts" });
-    },
+  const { data, isFetched } = useGet({
+    url: "posts?_l=uz",
+    queryKey: ["posts"],
   });
 
-  //   console.log(modalData);
-  const putReq = (values) => {
-    // const status = 0
-    // if(values.status==0){
-    //      status = 1 
-    // }else{
-    //     status = 0
-    // }
-    axios.put(
-      `http://api.test.uz/api/v1/admin/posts/updateStatus/${values.id}`,
-      { status:1},
-      {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      }
-    );
-  }
+    const { mutate: postForm } = usePost({
+      url: "posts?_l=uz",
+      queryKey: ["posts"],
+    });
+    const { mutate: putForm } = usePut({ url: "posts/", queryKey: ["posts"] });
 
- const { mutate: statusChange } = useMutation({
-   mutationFn: (values) => putReq(values),
-   onSuccess: () => {
-     queryClient.invalidateQueries({ queryKey: "posts" });
-   },
- });
+  const queryClient = useQueryClient();
 
+  const {mutate: deleteHandler} = useDelete({url:'posts/', queryKey:['posts']})
 
-    const { data, isLoading, error, isError } = useGetData(
-      ["posts"],
-      `http://api.test.uz/api/v1/admin/posts?_l=uz&sort=id&_t=${new Date().getTime()}`,
-      token
-    );
-
-    console.log(get(data, "data.data"));
-
-  const columns = [
-    {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
-      width: "1%",
-    },
-    {
-      title: "Заголовок",
-      dataIndex: "title",
-      key: "title",
-    },
-    {
-      title: "Описание",
-      dataIndex: "description",
-      key: "description",
-      width: "10%",
-    },
-    {
-      title: "Контент",
-      dataIndex: "content",
-      key: "content",
-      width: "50%",
-    },
-    {
-      title: "Статус",
-      dataIndex: "status",
-      key: "status",
-      render:(_, row)=> {
-        console.log(row);
-        return(
-        <div>
-            <Switch defaultChecked={row.status==1?true:false} onClick={()=>statusChange(row)}/>
-        </div>)
-      }
-    },
-    {
-      title: "Действие",
-      dataIndex: "type",
-      key: "type",
-      render: (_, row) => {
-
-        return (
-          <div className="flex gap-5">
-            <DeleteOutlined
-              className="text-red-500 cursor-pointer text-lg"
-              onClick={() => deleteHandler(get(row, "id"))}
-            />
-            <EditOutlined
-              className="text-blue-500 cursor-pointer text-lg"
-              onClick={() => {console.log('ROW',row); setModalData({ isOpen: true, item: row })}}
-            />
-          </div>
-        );
-      },
-    },
-  ];
+  // const { mutate: statusHandler } = useMutation({
+  //   mutationFn: ({ id, status }) => {
+  //     return axios.put(
+  //       `http://api.test.uz/api/v1/admin/posts/updateStatus/${id}?_l=uz`,
+  //       { status },
+  //       {
+  //         headers: {
+  //           Authorization: "Bearer " + token,
+  //         },
+  //       }
+  //     );
+  //   },
+  //   onSuccess: () => {
+  //     message.success("Success");
+  //     queryClient.invalidateQueries({ queryKey: ["post"] });
+  //   },
+  // });
+  const { mutate: statusHandler } = usePut({ url: "posts/updateStatus/" });
 
   return (
     <div>
-      <div className="flex justify-end">
+      <div className="flex justify-end mb-4">
         <Button
-          className="mb-2"
           type="primary"
-          onClick={() =>
-            setModalData({
-              isOpen: true,
-              item: null,
-            })
-          }
+          onClick={() => setModalData({ isOpen: true, item: null })}
         >
-          Добавить
+          +ADD
         </Button>
-
-        <Form {...{ modalData, setModalData, statusChange }} />
       </div>
       <Table
+        rowKey={"id"}
         dataSource={get(data, "data.data")}
-        loading={isLoading}
-        columns={columns}
-        className="p-2"
+        columns={[
+          {
+            title: "ID",
+            dataIndex: "id",
+            className: "w-[20px]",
+          },
+          {
+            title: "Title",
+            dataIndex: "title",
+          },
+          {
+            title: "Description",
+            dataIndex: "description",
+          },
+          {
+            title: "Content",
+            dataIndex: "content",
+            render: (value) => {
+              return value.length > 50 ? (
+                <Popover title={value}>
+                  {truncate(value, { length: 50, omission: "..." })}
+                </Popover>
+              ) : (
+                value
+              );
+            },
+          },
+          {
+            title: "Status",
+            dataIndex: "status",
+            render: (value, row) => {
+              return (
+                <Switch
+                  loading={!isFetched}
+                  checked={value ? true : false}
+                  onChange={(e) =>{
+                    statusHandler({ id: get(row, "id"), values: e ? {status:1} : {status:0} })
+                  }}
+                />
+              );
+            },
+          },
+          {
+            title: "Action",
+            dataIndex: "id",
+            render: (_, row) => {
+              return (
+                <div className="flex gap-5">
+                  <Tooltip title="Delete">
+                    <Popconfirm
+                      placement="topRight"
+                      description={"Delete"}
+                      onConfirm={() => deleteHandler(get(row, "id"))}
+                      okText="Yes"
+                      cancelText="No"
+                    >
+                      <DeleteOutlined className="text-red-500 cursor-pointer text-lg" />
+                    </Popconfirm>
+                  </Tooltip>
+                  <Tooltip title="Edit">
+                    <EditOutlined
+                      className="text-blue-500 cursor-pointer text-lg"
+                      onClick={() =>
+                        setModalData({
+                          isOpen: true,
+                          item: row,
+                        })
+                      }
+                    />
+                  </Tooltip>
+                </div>
+              );
+            },
+          },
+        ]}
       />
+      <PostForm {...{ modalData, setModalData, putForm, postForm}} />
     </div>
   );
 };

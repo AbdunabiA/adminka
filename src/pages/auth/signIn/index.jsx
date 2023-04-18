@@ -8,19 +8,21 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { signIn } from "store/auth";
+import storage from "services/storage";
 
 const index = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const mutation = useMutation({
-    mutationFn: (user) => {
+    mutationFn: (userData) => {
       return axios.post(
         "http://api.test.uz/api/v1/admin/user/sign-in",
-        user
+        userData
       );
     },
     onSuccess: (data) => {
       navigate("/");
+      storage.set('token', get(data, 'data.data.token'))
       dispatch(signIn(get(data, "data.data")));
     },
   });

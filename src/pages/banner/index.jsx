@@ -6,7 +6,7 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import Form from "./components/form";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { useGetData } from "hooks";
+
 const index = () => {
   const [modalData, setModalData] = useState({
     isOpen: false,
@@ -38,14 +38,12 @@ const index = () => {
     });
   };
 
+  const {data, isLoading} = useQuery({
+    queryKey:['banner'],
+    queryFn:fetchBanner,
+  })
 
-  const { data, isLoading, error, isError } = useGetData(
-    ["banners"],
-    "http://api.test.uz/api/v1/admin/banners", 
-    token
-  );
-
-  console.log(get(data, "data.data"));
+  // console.log(get(data, "data.data"));
 
   const columns = [
     {
