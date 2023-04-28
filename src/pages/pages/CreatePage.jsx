@@ -1,26 +1,44 @@
 import { Button } from "antd";
+import {ArrowLeftOutlined} from '@ant-design/icons'
 import { Fields } from "components";
+import { usePost } from "crud";
 import { Field, Form, Formik } from "formik";
 import { get } from "lodash";
+import { useNavigate } from "react-router-dom";
 
 
-const PostPage = () => { 
+const CreatePage = () => { 
+  const navigate = useNavigate()
+  const {mutate:postForm} = usePost({
+    url:'/pages', 
+    method:'post',
+    queryKey:['pages'], 
+    params:{extra:{_l:'uz'}},
+    onSuccess:(data) =>{
+      return navigate('/pages')
+    }
+  })
   return (
     <div>
+      <Button 
+      type='primary' 
+      className="mb-4"
+      onClick={()=>navigate(-1)}
+      >
+        <ArrowLeftOutlined className="text-xl"/>
+      </Button>
       <Formik
         // validationSchema={validationSchema}
-        // initialValues={{
-        //   title: get(modalData, "item.title", ""),
-        //   description: get(modalData, "item.description", ""),
-        //   content: get(modalData, "item.content", ""),
-        //   status: get(modalData, "item.status", ""),
-        // }}
-        // onSubmit={(values, { resetForm }) => {
-        //   console.log(values);
-        //   modalData.item
-        //     ? putForm({ values, resetForm, id: modalData.item.id })
-        //     : postForm({ values, resetForm });
-        // }}
+        initialValues={{
+          title: "",
+          description: "",
+          slug: "",
+          status: 0,
+        }}
+        onSubmit={(values, { resetForm }) => {
+          console.log(values);
+          postForm({ values, resetForm });
+        }}
       >
         {({ handleSubmit }) => {
           return (
@@ -32,8 +50,8 @@ const PostPage = () => {
                 component={Fields.Input}
               />
               <Field
-                name="content"
-                label="Контент"
+                name="slug"
+                label="Slug"
                 component={Fields.TextArea}
                 type="textarea"
               />
@@ -51,4 +69,4 @@ const PostPage = () => {
   );
 }
 
-export default PostPage
+export default CreatePage

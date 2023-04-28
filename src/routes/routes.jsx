@@ -5,7 +5,7 @@ import { authRoutes, privateRoutes } from "./index";
 import { useSelector } from "react-redux";
 import { get } from "lodash";
 
-const PostPage = lazy(() => import("pages/pages/postPage"));
+
 
 const appRoutes = (routes) => {
   return routes.map((route, key) => (
@@ -25,19 +25,9 @@ const routesWrapper = () => {
     <Routes>
       <Route path="*" element={<h2>Not Fonund</h2>} />
       {isAuthenticated ? (
-        <Route>
           <Route path="/" element={<Layout />}>
             {appRoutes(privateRoutes)}
           </Route>
-          <Route
-            path="/pages/postPage"
-            element={
-              <Suspense fallback="LOADING...">
-                <PostPage />
-              </Suspense>
-            }
-          />
-        </Route>
       ) : (
         appRoutes(authRoutes)
       )}

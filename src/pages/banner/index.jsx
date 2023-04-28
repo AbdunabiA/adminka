@@ -1,49 +1,19 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Button, Modal, Table } from "antd";
-import axios from "axios";
+import {useQueryClient } from "@tanstack/react-query";
+import { Button,Popconfirm,Table, Tooltip, notification } from "antd";
 import { get } from "lodash";
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
-import Form from "./components/form";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { ContainerAll } from "modules";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useDelete } from "crud";
+import qs from 'qs'
 
 const index = () => {
-  const [modalData, setModalData] = useState({
-    isOpen: false,
-    item: null,
-  });
+  const navigate = useNavigate()
+  const location = useLocation();
+  const params = qs.parse(location.search, { ignoreQueryPrefix: true });
   const queryClient = useQueryClient();
 
-  const { mutate: deleteHandler } = useMutation({
-    mutationFn: (id) => {
-      axios.delete(`http://api.test.uz/api/v1/admin/banners/${id}`, {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: "banners" });
-    },
-  });
-
-  console.log(modalData);
-
-  const { token } = useSelector((state) => get(state, "auth"));
-  const fetchBanner = () => {
-    return axios.get("http://api.test.uz/api/v1/admin/banners", {
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-    });
-  };
-
-  const {data, isLoading} = useQuery({
-    queryKey:['banner'],
-    queryFn:fetchBanner,
-  })
-
-  // console.log(get(data, "data.data"));
+  const {mutate:deleteHandler} = useDelete()
 
   const columns = [
     {
@@ -58,19 +28,35 @@ const index = () => {
     },
     {
       title: "Action",
-      dataIndex: "type",
       key: "type",
       render: (_, row) => {
         return (
           <div className="flex gap-5">
-            <DeleteOutlined
-              className="text-red-500 cursor-pointer text-lg"
-              onClick={() => deleteHandler(get(row, "id"))}
-            />
-            <EditOutlined
-              className="text-blue-500 cursor-pointer text-lg"
-              onClick={() => setModalData({ isOpen: true, item: row })}
-            />
+            <Tooltip title="Delete">
+              <Popconfirm
+                placement="topRight"
+                description={"Delete"}
+                onConfirm={() => deleteHandler({
+                  url:`banners/${get(row, "id")}`,
+                  onSuccess:()=>{
+                    queryClient.invalidateQueries(['banners'])
+                    notification.success({
+                      message:'Deleted'
+                    })
+                  }
+                })}
+                okText="Yes"
+                cancelText="No"
+              >
+                <DeleteOutlined className="text-red-500 cursor-pointer text-lg" />
+              </Popconfirm>
+            </Tooltip>
+            <Tooltip title="Edit">
+              <EditOutlined
+                className="text-blue-500 cursor-pointer text-lg"
+                onClick={() => navigate(`/banner/update/${get(row, "id")}`)}
+              />
+            </Tooltip>
           </div>
         );
       },
@@ -83,24 +69,48 @@ const index = () => {
         <Button
           className="mb-2"
           type="primary"
-          onClick={() =>
-            setModalData({
-              isOpen: true,
-              item: null,
-            })
-          }
+          onClick={() => navigate("/banner/create")}
         >
           ADD
         </Button>
-
-        <Form {...{ modalData, setModalData }} />
       </div>
-      <Table
-        dataSource={get(data, "data.data")}
-        loading={isLoading}
-        columns={columns}
-        className="p-2"
-      />
+      <ContainerAll
+        url="/banners"
+        queryKey={["banners"]}
+        params={{
+          sort: "-id",
+          limit: 5,
+          page: get(params, "page", 1),
+          extra: {
+            _l: "uz",
+          },
+        }}
+      >
+        {({ items, meta, isLoading }) => {
+          console.log(items);
+          return (
+            <Table
+              pagination={{
+                total: get(meta, "total"),
+                pageSize: get(meta, "perPage"),
+                current: +get(params, "page", 1),
+              }}
+              onChange={(page) => {
+                navigate({
+                  search: qs.stringify({
+                    page: page.current,
+                  }),
+                });
+              }}
+              rowKey={"id"}
+              dataSource={items}
+              loading={isLoading}
+              columns={columns}
+              className="p-2"
+            />
+          );
+        }}
+      </ContainerAll>
     </div>
   );
 };

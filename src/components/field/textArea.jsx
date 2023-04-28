@@ -19,25 +19,25 @@ const textInput = ({
     }
   return (
     <div className="mb-2">
-        {label ? <h4>{label}</h4>:null}
-        <TextArea
-          rows={rows}
-          name={field.name}
-          value={field.value}
-          onBlur={onBlur}
-          onChange={(e)=>setFieldValue(field.name, e.target.value)}
-          placeholder={placeholder}
-          status={touched[field.name] && errors[field.name] && 'error'}
-        />
-        {
-            touched[field.name] && errors[field.name] && (
-                <small className="text-red-500 font-semibold text-xs">
-                    {errorMessage}
-                </small>
-            )
+      {label ? <h4>{label}</h4> : null}
+      <TextArea
+        rows={rows}
+        name={field.name}
+        value={field.value}
+        onBlur={() => !field.value && setFieldTouched(field.name, true)}
+        onChange={(e) => setFieldValue(field.name, e.target.value)}
+        placeholder={placeholder}
+        status={
+          !field.value && touched[field.name] && errors[field.name] && "error"
         }
+      />
+      {!field.value && touched[field.name] && errors[field.name] && (
+        <small className="text-red-500 font-semibold text-xs">
+          {errorMessage}
+        </small>
+      )}
     </div>
-  )
+  );
 }
 
 export default textInput

@@ -7,7 +7,7 @@ const menus = [
     label: "Home",
   },
   {
-    key: "banner",
+    key: "banners",
     icon: <UserOutlined />,
     label: "Banner",
   },

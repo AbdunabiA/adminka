@@ -1,12 +1,8 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Button, Modal, Switch } from "antd";
-import axios from "axios";
+import { Button, Modal} from "antd";
 import { Fields } from "components";
-import { usePost, usePut } from "crud";
 import { Field, Form, Formik } from "formik";
 import { get } from "lodash";
 import React from "react";
-import { useSelector } from "react-redux";
 import * as Yup from 'yup'
 
 const validationSchema = Yup.object({
@@ -34,11 +30,11 @@ const PostForm = ({ modalData, setModalData, putForm, postForm }) => {
           title: get(modalData, "item.title", ""),
           description: get(modalData, "item.description", ""),
           content: get(modalData, "item.content", ""),
-          status: get(modalData, "item.status", ""),
+          status: get(modalData, "item.status", 0),
         }}
         onSubmit={(values, { resetForm }) => {
           console.log(values);
-          modalData.item ? putForm({values, resetForm, id:modalData.item.id,}) : postForm({ values, resetForm });
+          modalData.item ? putForm({values, resetForm}) : postForm({ values, resetForm });
           setModalData({...modalData, isOpen:false})
         }}
       >
