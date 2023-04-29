@@ -6,13 +6,15 @@ import { ContainerAll } from "modules";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDelete } from "crud";
 import qs from 'qs'
+import { Tabs } from "components";
+import { useSelector } from "react-redux";
 
 const index = () => {
   const navigate = useNavigate()
   const location = useLocation();
   const params = qs.parse(location.search, { ignoreQueryPrefix: true });
+  const currentLangCode = useSelector((state) => state.system.currentLangCode);
   const queryClient = useQueryClient();
-
   const {mutate:deleteHandler} = useDelete()
 
   const columns = [
@@ -36,15 +38,20 @@ const index = () => {
               <Popconfirm
                 placement="topRight"
                 description={"Delete"}
-                onConfirm={() => deleteHandler({
-                  url:`banners/${get(row, "id")}`,
-                  onSuccess:()=>{
-                    queryClient.invalidateQueries(['banners'])
-                    notification.success({
-                      message:'Deleted'
-                    })
-                  }
-                })}
+                onConfirm={() =>
+                  deleteHandler({
+                    url: `/banners/${get(row, "id")}`,
+                    params: {
+                      extra: { _l: get(params, "lang", currentLangCode) },
+                    },
+                    onSuccess: () => {
+                      queryClient.invalidateQueries(["banners"]);
+                      notification.success({
+                        message: "Deleted",
+                      });
+                    },
+                  })
+                }
                 okText="Yes"
                 cancelText="No"
               >
@@ -65,7 +72,8 @@ const index = () => {
 
   return (
     <div>
-      <div className="flex justify-end">
+      <div className="flex justify-between">
+        <Tabs />
         <Button
           className="mb-2"
           type="primary"
@@ -78,11 +86,11 @@ const index = () => {
         url="/banners"
         queryKey={["banners"]}
         params={{
-          sort: "-id",
+          sort: "id",
           limit: 5,
           page: get(params, "page", 1),
           extra: {
-            _l: "uz",
+            _l: get(params, "lang", currentLangCode),
           },
         }}
       >

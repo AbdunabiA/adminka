@@ -2,21 +2,29 @@ import { Button } from "antd";
 import { Fields } from "components";
 import { Field } from "formik"
 import { ContainerForm } from "modules"
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 
 const create = () => {
     const navigate = useNavigate()
+    const currentLangCode = useSelector(
+      (state) => state.system.currentLangCode
+    );
   return (
     <>
-      <Button className="mb-5" type="primary" onClick={() => navigate(-1)}>
+      <Button
+        className="mb-5"
+        type="primary"
+        onClick={() => navigate("/banners")}
+      >
         Exit
       </Button>
       <ContainerForm
         url="/banners"
         method="post"
         params={{
-          extra: { _l: "uz" },
+          extra: { _l: currentLangCode },
         }}
         fields={[
           {
@@ -32,7 +40,7 @@ const create = () => {
             min: 3,
           },
         ]}
-        onSuccess={(data)=>navigate(`/banner/update/${data?.id}`)}
+        onSuccess={(data) => navigate(`/banner/update/${data?.id}`)}
       >
         {({ handleSubmit }) => {
           return (

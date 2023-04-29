@@ -1,15 +1,15 @@
-import { Button, notification} from 'antd'
-import { Fields, Tabs } from 'components'
-import { Field } from 'formik'
-import { get } from 'lodash'
-import { ContainerForm, ContainerOne } from 'modules'
-import { useSelector } from 'react-redux'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Button, notification } from "antd";
+import { Fields, Tabs } from "components";
+import { Field} from "formik";
+import { get } from "lodash";
+import { ContainerOne, ContainerForm } from "modules";
+import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 import qs from 'qs'
 
-const update = () => {
-  const {id} = useParams()
-  const navigate = useNavigate()
+const UpdatePage = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
   const currentLangCode = useSelector((state) => state.system.currentLangCode);
   const params = qs.parse(location.search, { ignoreQueryPrefix: true });
   return (
@@ -18,24 +18,22 @@ const update = () => {
         <Button
           className="mb-5"
           type="primary"
-          onClick={() => navigate("/posts")}
+          onClick={() => navigate("/pages")}
         >
           Exit
         </Button>
-        <Tabs/>
+        <Tabs />
       </div>
-      <ContainerOne 
-        url={`/posts/${id}`} 
-        queryKey={["post"]}
-        params={{
-          extra:{_l:get(params, 'lang', currentLangCode)}
-        }}
+      <ContainerOne
+        url={`/pages/${id}`}
+        queryKey={["page"]}
+        params={{ extra: { _l: get(params, "lang", currentLangCode) } }}
       >
         {({ item, isLoading }) => {
-          console.log(item);
+          // console.log(item);
           return (
             <ContainerForm
-              url={`/posts/${id}`}
+              url={`/pages/${id}`}
               method="put"
               params={{ extra: { _l: get(params, "lang", currentLangCode) } }}
               onSuccess={(data, resetForm) => {
@@ -47,27 +45,26 @@ const update = () => {
                 {
                   name: "title",
                   type: "string",
-                  value: get(item, "title", ""),
+                  value: get(item, "data.title", ""),
                   required: true,
                 },
                 {
                   name: "description",
                   type: "string",
-                  value: get(item, "description", ""),
+                  value: get(item, "data.description", ""),
                   required: true,
                 },
                 {
-                  name: "content",
+                  name: "slug",
                   type: "string",
-                  value: get(item, "content", ""),
+                  value: get(item, "data.slug", ""),
                   required: true,
-                  min: 5,
                   max: 100,
                 },
                 {
                   name: "status",
                   type: "boolean",
-                  value: get(item, "status", "") === 1 ? true : false,
+                  value: get(item, "data.status", "") === 1 ? true : false,
                   onSubmitValue: (value) => (value ? 1 : 0),
                 },
               ]}
@@ -83,12 +80,12 @@ const update = () => {
                     <Field
                       name="description"
                       label="Description"
-                      component={Fields.Input}
+                      component={Fields.TextArea}
                     />
                     <Field
-                      name="content"
-                      label="Content"
-                      component={Fields.TextArea}
+                      name="slug"
+                      label="Slug"
+                      component={Fields.Input}
                     />
                     <Field
                       name="status"
@@ -109,6 +106,6 @@ const update = () => {
       </ContainerOne>
     </>
   );
-}
+};
 
-export default update
+export default UpdatePage;

@@ -3,7 +3,6 @@ import config from "config";
 
 const initialState = {
 	currentLangCode: config.DEFAULT_LANGUAGE,
-	changeFilmType: 1
 };
 
 export const systemSlice = createSlice({
@@ -16,12 +15,6 @@ export const systemSlice = createSlice({
 				currentLangCode: action.payload
 			};
 		},
-		changeFilmType: (state, action) => {
-			return {
-				...state,
-				changeFilmType: action.payload
-			};
-		}
 	}
 });
 // Action creators are generated for each case reducer function

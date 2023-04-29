@@ -1,24 +1,33 @@
 import { Button, notification } from "antd"
-import { Fields } from "components"
+import { Fields, Tabs } from "components"
 import { Field } from "formik"
 import { get } from "lodash"
 import { ContainerForm, ContainerOne } from "modules"
 import { useNavigate, useParams } from "react-router-dom"
+import qs from 'qs'
+import { useSelector } from "react-redux"
 
 
 const update = () => {
     const {id} = useParams()
     const navigate = useNavigate()
+    const params = qs.parse(location.search, { ignoreQueryPrefix: true });
+    const currentLangCode = useSelector(
+      (state) => state.system.currentLangCode
+    );
   return (
     <>
-      <Button className="mb-5" type="primary" onClick={() => navigate(-1)}>
-        Exit
-      </Button>
+      <div className="flex justify-between items-center">
+        <Button className="mb-5" type="primary" onClick={() => navigate('/banners')}>
+          Exit
+        </Button>
+        <Tabs />
+      </div>
       <ContainerOne
         url={`/banners/${id}`}
         queryKey={["banner"]}
         params={{
-          extra: { _l: "uz" },
+          extra: { _l: get(params, "lang", currentLangCode) },
         }}
       >
         {({ item }) => (
@@ -26,7 +35,7 @@ const update = () => {
             url={`/banners/${item?.id}`}
             method="put"
             params={{
-              extra: { _l: "uz" },
+              extra: { _l: get(params, "lang", currentLangCode) },
             }}
             onSuccess={() => {
               notification.success({
@@ -63,7 +72,7 @@ const update = () => {
                     disabled={isFetching}
                     onClick={handleSubmit}
                   >
-                    Create
+                    Change
                   </Button>
                 </div>
               </>
