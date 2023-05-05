@@ -14,17 +14,15 @@ const TextInput = ({
       {label ? <h4>{label}</h4> : null}
       <Input
         name={field.name}
-        onBlur={() => !field.value && setFieldTouched(field.name, true)}
-        status={
-          !field.value && touched[field.name] && errors[field.name] && "error"
-        }
+        onBlur={() => setFieldTouched(field.name, true)}
+        status={touched[field.name] && errors[field.name] && "error"}
         value={field.value}
         onChange={(e) => setFieldValue(field.name, e.target.value)}
         placeholder={placeholder}
       />
-      {!field.value && touched[field.name] && errors[field.name] && (
+      {touched[field.name] && errors[field.name] && (
         <small className="text-red-500 font-semibold text-xs">
-          {errorMessage}
+          {errors[field.name]}
         </small>
       )}
     </div>

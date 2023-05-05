@@ -50,7 +50,7 @@ const index = () => {
         // onError={(error)=>console.log(error)}
       >
         {({ items, isLoading, isFetched, meta, isFetching }) => {
-          console.log(items);
+          // console.log(items);
           return (
             <Table
               pagination={{
@@ -61,6 +61,7 @@ const index = () => {
               onChange={(page) => {
                 navigate({
                   search: qs.stringify({
+                    ...params,
                     page: page.current,
                   }),
                 });
@@ -83,6 +84,10 @@ const index = () => {
                   dataIndex: "description",
                 },
                 {
+                  title: "Slug",
+                  dataIndex: "slug",
+                },
+                {
                   title: "Content",
                   dataIndex: "content",
                   render: (value) => {
@@ -101,26 +106,26 @@ const index = () => {
                   render: (value, row) => {
                     return (
                       <Switch
-                        loading={isFetching}
+                        loading={isLoading}
                         checked={value ? true : false}
                         onChange={(e) => {
                           statusHandler({
                             url: `/posts/updateStatus/${row?.id}`,
-                            method:'put',
+                            method: "put",
                             params: {
                               extra: {
                                 _l: get(params, "lang", currentLangCode),
                               },
                             },
                             values: e ? { status: 1 } : { status: 0 },
-                            onSuccess:()=>{
+                            onSuccess: () => {
                               queryClient.invalidateQueries({
                                 queryKey: ["posts"],
                               });
                               notification.success({
-                                message:'Changed',
-                              })
-                            }
+                                message: "Changed",
+                              });
+                            },
                           });
                         }}
                       />
@@ -136,7 +141,7 @@ const index = () => {
                           <Popconfirm
                             placement="topRight"
                             description={"Delete"}
-                            onConfirm={() =>{
+                            onConfirm={() => {
                               deleteHandler({
                                 url: `/posts/${get(row, "id")}`,
                                 params: {
@@ -150,8 +155,8 @@ const index = () => {
                                     message: "Deleted",
                                   });
                                 },
-                              })}
-                            }
+                              });
+                            }}
                             okText="Yes"
                             cancelText="No"
                           >
@@ -161,7 +166,15 @@ const index = () => {
                         <Tooltip title="Edit">
                           <EditOutlined
                             className="text-blue-500 cursor-pointer text-lg"
-                            onClick={() => navigate(`/post/update/${get(row, "id")}`)}
+                            onClick={() =>
+                              navigate({
+                                pathname: `/post/update/`,
+                                search:qs.stringify({
+                                  ...params,
+                                  slug:get(row, "slug")
+                                })
+                              })
+                            }
                           />
                         </Tooltip>
                       </div>

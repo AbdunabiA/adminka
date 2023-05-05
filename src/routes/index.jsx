@@ -51,7 +51,7 @@ const privateRoutes = [
     element: <CreatePost />,
   },
   {
-    path: "/post/update/:id",
+    path: "/post/update",
     element: <UpdatePost />,
   },
   {

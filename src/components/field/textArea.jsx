@@ -24,14 +24,14 @@ const textInput = ({
         rows={rows}
         name={field.name}
         value={field.value}
-        onBlur={() => !field.value && setFieldTouched(field.name, true)}
+        onBlur={() => setFieldTouched(field.name, true)}
         onChange={(e) => setFieldValue(field.name, e.target.value)}
         placeholder={placeholder}
         status={
-          !field.value && touched[field.name] && errors[field.name] && "error"
+          touched[field.name] && errors[field.name] && "error"
         }
       />
-      {!field.value && touched[field.name] && errors[field.name] && (
+      {touched[field.name] && errors[field.name] && (
         <small className="text-red-500 font-semibold text-xs">
           {errorMessage}
         </small>

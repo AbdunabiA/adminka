@@ -31,6 +31,7 @@ const index = () => {
       onChange={(value) => {
         navigate({
           search: qs.stringify({
+            ...params,
             lang: value,
           }),
         });

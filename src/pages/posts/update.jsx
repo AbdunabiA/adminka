@@ -2,7 +2,7 @@ import { Button, notification} from 'antd'
 import { Fields, Tabs } from 'components'
 import { Field } from 'formik'
 import { get } from 'lodash'
-import { ContainerForm, ContainerOne } from 'modules'
+import { ContainerAll, ContainerForm, ContainerOne } from 'modules'
 import { useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import qs from 'qs'
@@ -12,54 +12,76 @@ const update = () => {
   const navigate = useNavigate()
   const currentLangCode = useSelector((state) => state.system.currentLangCode);
   const params = qs.parse(location.search, { ignoreQueryPrefix: true });
+  console.log(get(params, "slug", ""));
   return (
     <>
       <div className="flex justify-between items-center mb-4">
         <Button
           className="mb-5"
           type="primary"
-          onClick={() => navigate("/posts")}
+          onClick={() => navigate({
+            pathname:"/posts",
+            search:qs.stringify({
+              ...params
+            })
+          })}
         >
           Exit
         </Button>
-        <Tabs/>
+        <Tabs />
       </div>
-      <ContainerOne 
-        url={`/posts/${id}`} 
+      <ContainerAll
+        url={`/posts`}
         queryKey={["post"]}
         params={{
-          extra:{_l:get(params, 'lang', currentLangCode)}
+          filter: { slug: get(params, "slug", "") },
+          extra: { _l: get(params, "lang", currentLangCode) },
         }}
       >
-        {({ item, isLoading }) => {
-          console.log(item);
+        {({ items, isLoading, data }) => {
+          console.log(items);
           return (
             <ContainerForm
-              url={`/posts/${id}`}
-              method="put"
-              params={{ extra: { _l: get(params, "lang", currentLangCode) } }}
+              url={`/posts/${items?.length ? items[0].id : ""}`}
+              method={items?.length ? "put" : "post"}
+              params={{
+                extra: { _l: get(params, "lang", currentLangCode) },
+              }}
               onSuccess={(data, resetForm) => {
+                if (items) {
+                  notification.success({
+                    message: "Changed",
+                  });
+                }
                 notification.success({
-                  message: "Changed",
+                  message: "Added",
                 });
               }}
               fields={[
                 {
                   name: "title",
                   type: "string",
-                  value: get(item, "title", ""),
+                  value: items?.length ? get(items[0], "title", "") : "",
                   required: true,
                 },
                 {
                   name: "description",
                   type: "string",
-                  value: get(item, "description", ""),
+                  value: items?.length ? get(items[0], "description", "") : "",
                   required: true,
+                },
+                {
+                  name: "slug",
+                  type: "string",
+                  value: items?.length
+                    ? get(items[0], "slug", "")
+                    : get(params, "slug", ""),
+                  // required: true,
                 },
                 {
                   name: "content",
                   type: "string",
-                  value: get(item, "content", ""),
+                  value: items?.length ? get(items[0], "content", "") : "",
                   required: true,
                   min: 5,
                   max: 100,
@@ -67,7 +89,11 @@ const update = () => {
                 {
                   name: "status",
                   type: "boolean",
-                  value: get(item, "status", "") === 1 ? true : false,
+                  value: items?.length
+                    ? get(items[0], "status", "") === 1
+                      ? true
+                      : false
+                    : false,
                   onSubmitValue: (value) => (value ? 1 : 0),
                 },
               ]}
@@ -97,7 +123,7 @@ const update = () => {
                     />
                     <div className="flex justify-end mb-4">
                       <Button type="primary" onClick={handleSubmit}>
-                        Update
+                        {items?.length ? "Update" : "Add"}
                       </Button>
                     </div>
                   </>
@@ -106,7 +132,7 @@ const update = () => {
             </ContainerForm>
           );
         }}
-      </ContainerOne>
+      </ContainerAll>
     </>
   );
 }

@@ -1,5 +1,5 @@
 import {useQueryClient } from "@tanstack/react-query";
-import { Button,Popconfirm,Table, Tooltip, notification } from "antd";
+import { Avatar, Button,Popconfirm,Table, Tooltip, notification } from "antd";
 import { get } from "lodash";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { ContainerAll } from "modules";
@@ -27,6 +27,16 @@ const index = () => {
       title: "Description",
       dataIndex: "description_uz",
       key: "description",
+    },
+    {
+      title: "Photo",
+      dataIndex:'file',
+      render:(value, row)=>{
+        // console.log('render',value);
+        return (         
+          <Avatar shape="square" src={get(value, "thumbnails.small.src")} />
+        );
+      }
     },
     {
       title: "Action",
@@ -92,6 +102,7 @@ const index = () => {
           extra: {
             _l: get(params, "lang", currentLangCode),
           },
+          include:'file'
         }}
       >
         {({ items, meta, isLoading }) => {

@@ -39,6 +39,14 @@ const create = () => {
             required: true,
             min: 3,
           },
+          {
+            name:'file_id',
+            type:'array',
+            onSubmitValue:(value)=>{
+              // console.log(value);
+              return value[0].id
+            }
+          }
         ]}
         onSuccess={(data) => navigate(`/banner/update/${data?.id}`)}
       >
@@ -51,6 +59,7 @@ const create = () => {
                 label="Description"
                 component={Fields.Input}
               />
+              <Field name="file_id" label="Name" component={Fields.Upload} />
               <div className="w-full flex justify-end">
                 <Button className="" type="primary" onClick={handleSubmit}>
                   Create
