@@ -81,7 +81,7 @@ const create = () => {
                 type="textarea"
               />
               <Field name="document_ids" label='Banners' component={Fields.AsyncSelect}/>
-              <Field name="status" label="Status" component={Fields.Switch} />
+              {/* <Field name="status" label="Status" component={Fields.Switch} /> */}
               <div className="w-full flex justify-end">
                 <Button className="" type="primary" onClick={handleSubmit}>
                   Create

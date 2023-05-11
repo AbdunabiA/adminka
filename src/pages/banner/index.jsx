@@ -68,38 +68,6 @@ const index = () => {
       },
     },
     {
-      title: "Status",
-      dataIndex: "status",
-      render: (value, row) => {
-        return (
-          <Switch
-            // loading={isLoading}
-            checked={value ? true : false}
-            onChange={(e) => {
-              statusHandler({
-                url: `/posts/updateStatus/${row?.id}`,
-                method: "put",
-                params: {
-                  extra: {
-                    _l: get(params, "lang", currentLangCode),
-                  },
-                },
-                values: e ? { status: 1 } : { status: 0 },
-                onSuccess: () => {
-                  queryClient.invalidateQueries({
-                    queryKey: ["posts"],
-                  });
-                  notification.success({
-                    message: "Changed",
-                  });
-                },
-              });
-            }}
-          />
-        );
-      },
-    },
-    {
       title: "Action",
       key: "action",
       render: (_, row) => {
