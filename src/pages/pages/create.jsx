@@ -4,12 +4,13 @@ import { Field } from "formik";
 import { ContainerForm } from "modules";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { systemSelectors } from "store/system";
 
 const create = () => {
   const navigate = useNavigate();
-  const currentLangCode = useSelector((state) => state.system.currentLangCode);
+  const currentLangCode = useSelector(systemSelectors.selectLanguage);
   return (
-    <>
+    <div className="mx-auto w-[90%] sm:w-[70%] md:w-[60%] lg:w-[50%] xl:w-[40%] 2xl:w-[clamp(320px,40%,1810px)]">
       <Button
         className="mb-5"
         type="primary"
@@ -78,7 +79,7 @@ const create = () => {
           );
         }}
       </ContainerForm>
-    </>
+    </div>
   );
 };
 

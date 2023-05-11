@@ -1,4 +1,4 @@
-import { LaptopOutlined, UserOutlined } from "@ant-design/icons";
+import { LaptopOutlined, UserOutlined, FileImageOutlined, PicCenterOutlined } from "@ant-design/icons";
 
 const menus = [
   {
@@ -8,7 +8,7 @@ const menus = [
   },
   {
     key: "banners",
-    icon: <UserOutlined />,
+    icon: <FileImageOutlined />,
     label: "Banner",
   },
   {
@@ -20,6 +20,11 @@ const menus = [
     key: "pages",
     icon: <LaptopOutlined />,
     label: "Pages",
+  },
+  {
+    key: "menus",
+    icon: <PicCenterOutlined />,
+    label: "Menus",
   },
 ];
 

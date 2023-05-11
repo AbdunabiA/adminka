@@ -4,11 +4,12 @@ import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import qs from 'qs'
 import { get } from "lodash"
+import { systemSelectors } from "store/system"
 
 
-const index = () => {
+const index = ({resetPage=true}) => {
     const navigate = useNavigate()
-    const currentLangCode = useSelector((state) => state.system.currentLangCode)
+    const currentLangCode = useSelector(systemSelectors.selectLanguage);
     const params = qs.parse(location.search, { ignoreQueryPrefix: true });
     const options = [
       {
@@ -32,6 +33,7 @@ const index = () => {
         navigate({
           search: qs.stringify({
             ...params,
+            page:resetPage ? 1 : params?.page,
             lang: value,
           }),
         });

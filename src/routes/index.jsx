@@ -12,6 +12,8 @@ const UpdatePost = lazy(() => import("pages/posts/update"));
 const Pages = lazy(() => import("pages/pages"));
 const CreatePage = lazy(() => import("pages/pages/create"));
 const UpdatePage = lazy(() => import("pages/pages/update"));
+const Menus = lazy(() => import("pages/menu"));
+const MenuItems = lazy(()=>import('pages/menu-items'))
 
 
 const authRoutes = [
@@ -51,7 +53,7 @@ const privateRoutes = [
     element: <CreatePost />,
   },
   {
-    path: "/post/update",
+    path: "/post/update/:id",
     element: <UpdatePost />,
   },
   {
@@ -65,6 +67,14 @@ const privateRoutes = [
   {
     path: "/page/create",
     element: <CreatePage />,
+  },
+  {
+    path: "/menus",
+    element: <Menus />,
+  },
+  {
+    path: "/menu-items/:id",
+    element: <MenuItems />,
   },
 ];
 

@@ -27,13 +27,11 @@ const textInput = ({
         onBlur={() => setFieldTouched(field.name, true)}
         onChange={(e) => setFieldValue(field.name, e.target.value)}
         placeholder={placeholder}
-        status={
-          touched[field.name] && errors[field.name] && "error"
-        }
+        status={touched[field.name] && errors[field.name] && "error"}
       />
       {touched[field.name] && errors[field.name] && (
         <small className="text-red-500 font-semibold text-xs">
-          {errorMessage}
+          {errors[field.name]}
         </small>
       )}
     </div>

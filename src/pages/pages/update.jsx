@@ -6,14 +6,15 @@ import { ContainerOne, ContainerForm } from "modules";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import qs from 'qs'
+import { systemSelectors } from "store/system";
 
 const UpdatePage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const currentLangCode = useSelector((state) => state.system.currentLangCode);
+  const currentLangCode = useSelector(systemSelectors.selectLanguage);
   const params = qs.parse(location.search, { ignoreQueryPrefix: true });
   return (
-    <>
+    <div className="mx-auto w-[90%] sm:w-[70%] md:w-[60%] lg:w-[50%] xl:w-[40%] 2xl:w-[clamp(320px,40%,1810px)]">
       <div className="flex justify-between items-center mb-4">
         <Button
           className="mb-5"
@@ -82,11 +83,7 @@ const UpdatePage = () => {
                       label="Description"
                       component={Fields.TextArea}
                     />
-                    <Field
-                      name="slug"
-                      label="Slug"
-                      component={Fields.Input}
-                    />
+                    <Field name="slug" label="Slug" component={Fields.Input} />
                     <Field
                       name="status"
                       label="Status"
@@ -104,7 +101,7 @@ const UpdatePage = () => {
           );
         }}
       </ContainerOne>
-    </>
+    </div>
   );
 };
 

@@ -6,7 +6,6 @@ const TextInput = ({
   label,
   required = false,
   placeholder,
-  errorMessage = 'Это объязательное поле',
   form: { setFieldValue,setFieldTouched, errors, touched },
 }) => {
   return (

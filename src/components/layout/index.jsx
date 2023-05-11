@@ -7,7 +7,11 @@ const index = () => {
   const location = useLocation()
   const blackList = ['/create', '/update']
   return (
-    <Layout className="h-screen overflow-y-hidden">
+    <Layout
+      className={`h-${blackList.some((path) =>
+        location.pathname.includes(path)
+      )?'full':'screen'}`}
+    >
       {blackList.some((path) => location.pathname.includes(path)) ? null : (
         <Sidebar />
       )}

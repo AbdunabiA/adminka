@@ -4,7 +4,7 @@ import { message, Modal, notification, Spin, Upload } from "antd"
 import { usePost } from "crud"
 import {get} from 'lodash' 
 
-const upload = ({form:{setFieldValue, setFieldTouched, touched, errors, label}, limit=1, field}) => {
+const upload = ({form:{setFieldValue, setFieldTouched, touched, errors,},label, limit=1, field}) => {
     const [preview, setPreview] = useState({modal:false, title:'',url:''})
 
     const newData = 
@@ -96,8 +96,8 @@ const upload = ({form:{setFieldValue, setFieldTouched, touched, errors, label}, 
     }
 
   return (
-    <div>
-        {label?<label>{label}</label>:null}
+    <div className="mt-2">
+        {label?<h4>{label}</h4>:null}
         <Upload
           customRequest={()=>{}}
           name={field.name}
@@ -111,7 +111,7 @@ const upload = ({form:{setFieldValue, setFieldTouched, touched, errors, label}, 
           }}
           onBlur={()=>setFieldTouched(field.name, true)}
           onRemove={(file)=>{
-            console.log(file.id);
+            // console.log(file.id);
             deleteFile(file.id)
           }}
         >

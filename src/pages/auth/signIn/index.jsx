@@ -44,6 +44,7 @@ const index = () => {
             // console.log('DATA',data.data)
             storage.set('token', get(data, 'data.token'))
             dispatch(signIn(get(data, 'data')))
+            storage.set("userId", get(data, "data.user.id"));
             navigate("/");
           }}
           onError={()=>{

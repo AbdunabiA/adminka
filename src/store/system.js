@@ -18,6 +18,10 @@ export const systemSlice = createSlice({
 	}
 });
 // Action creators are generated for each case reducer function
-export const { changeLanguage, changeFilmType } = systemSlice.actions;
+export const { changeLanguage} = systemSlice.actions;
 
 export default systemSlice.reducer;
+
+const selectLanguage = (state) => state.system.currentLangCode;
+
+export const systemSelectors = {selectLanguage}

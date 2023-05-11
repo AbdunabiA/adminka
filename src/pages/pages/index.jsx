@@ -8,12 +8,13 @@ import qs from 'qs';
 import { useSelector } from 'react-redux';
 import { Tabs } from 'components';
 import { useQueryClient } from '@tanstack/react-query';
+import { systemSelectors } from 'store/system';
 
 const index = () => {
     const navigate = useNavigate()
     const location = useLocation()
     const queryClient = useQueryClient()
-    const currentLangCode = useSelector((state) => state.system.currentLangCode)
+    const currentLangCode = useSelector(systemSelectors.selectLanguage);
     const params = qs.parse(location.search, {ignoreQueryPrefix:true})
     const { mutate: deleteHandler } = useDelete();
     const { mutate: statusHandler } = usePost();

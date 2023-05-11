@@ -16,13 +16,14 @@ import { ContainerAll } from "modules";
 import { useLocation, useNavigate } from "react-router-dom";
 import qs from 'qs'
 import { Tabs } from "components";
+import { systemSelectors } from "store/system";
 
 const index = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate()
   const location = useLocation()
   const params = qs.parse(location.search, {ignoreQueryPrefix:true})
-  const currentLangCode = useSelector((state) => state.system.currentLangCode);
+  const currentLangCode = useSelector(systemSelectors.selectLanguage);
 
   const {mutate: deleteHandler} = useDelete()
   const {mutate:statusHandler} = usePost()
@@ -31,7 +32,10 @@ const index = () => {
     <div>
       <div className="flex justify-between items-center mb-4">
         <Tabs />
-        <Button type="primary" onClick={() => navigate("/post/create")}>
+        <Button type="primary" onClick={() => navigate({
+          pathname:"/post/create",
+          search:qs.stringify({...params})
+          })}>
           ADD
         </Button>
       </div>
@@ -52,6 +56,7 @@ const index = () => {
         {({ items, isLoading, isFetched, meta, isFetching }) => {
           // console.log(items);
           return (
+            <div className="overflow-x-auto">
             <Table
               pagination={{
                 total: get(meta, "total"),
@@ -84,21 +89,23 @@ const index = () => {
                   dataIndex: "description",
                 },
                 {
-                  title: "Slug",
-                  dataIndex: "slug",
-                },
-                {
                   title: "Content",
                   dataIndex: "content",
-                  render: (value) => {
-                    return value.length > 50 ? (
-                      <Popover title={value}>
-                        {truncate(value, { length: 50, omission: "..." })}
-                      </Popover>
-                    ) : (
-                      value
-                    );
-                  },
+                  render: (value) => {  
+                    return value.length > 50 ? ( 
+                        <Popover title={value}>
+                          {truncate(value, { length: 50, omission: "..." })}
+                        </Popover>
+                         ) : 
+                         (  value
+                        //  <div
+                        //   className="editor"
+                        //   dangerouslySetInnerHTML={{
+                        //     __html: value,
+                        //   }}
+                        // /> 
+                    )
+                  }
                 },
                 {
                   title: "Status",
@@ -168,10 +175,9 @@ const index = () => {
                             className="text-blue-500 cursor-pointer text-lg"
                             onClick={() =>
                               navigate({
-                                pathname: `/post/update/`,
+                                pathname: `/post/update/${row.id}`,
                                 search:qs.stringify({
                                   ...params,
-                                  slug:get(row, "slug")
                                 })
                               })
                             }
@@ -182,7 +188,8 @@ const index = () => {
                   },
                 },
               ]}
-            />
+              />
+          </div>
           );
         }}
       </ContainerAll>

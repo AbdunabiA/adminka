@@ -7,7 +7,7 @@ const index = (props) => {
         form:{setFieldValue}
     } = props
   return (
-    <div>
+    <div className="mt-2">
         {label?<h4>{label}</h4> : null}
         <Switch
           name={field.name}

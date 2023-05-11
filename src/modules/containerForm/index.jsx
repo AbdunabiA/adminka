@@ -84,7 +84,7 @@ const Main = ({
 
           validationFields[field.name] = validationField;
         });
-        console.log(validationFields);
+        // console.log(validationFields);
         return Yup.object().shape(validationFields);
       }}
       onSubmit={(values, { resetForm }) => {

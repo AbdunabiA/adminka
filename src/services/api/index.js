@@ -7,6 +7,7 @@ const api = axios.create({
 });
 
 api.defaults.params = {};
+api.defaults.params["author_id"] = storage.get("userId");
 api.defaults.params["_f"] = "json";
 api.defaults.headers.common["Accept"] = "application/json";
 api.defaults.headers.common["Cache-Control"] = "no-cache";
