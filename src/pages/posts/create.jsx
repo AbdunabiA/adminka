@@ -48,9 +48,12 @@ const create = () => {
           },
           {
             name: "document_ids",
-            type: "string",
-            // required: true,
-            // min: 3,
+            type: "array",
+            onSubmitValue:(value)=>{
+              return value.reduce((acc, el)=>{
+                return [...acc, el.id]
+              }, [])
+            }
           },
           {
             name: "status",
@@ -80,10 +83,19 @@ const create = () => {
                 component={Fields.Ckeditor}
                 type="textarea"
               />
-              <Field name="document_ids" label='Banners' component={Fields.AsyncSelect}/>
+              <Field
+                name="document_ids"
+                label="Banners"
+                loadOptionsUrl="/banners"
+                isMulti={true}
+                // loadOptionsParams={{ filter: { type: 1 } }}
+                optionLabel={`name_${currentLangCode}`}
+                optionValue={`name_${currentLangCode}`}
+                component={Fields.AsyncSelect}
+              />
               {/* <Field name="status" label="Status" component={Fields.Switch} /> */}
               <div className="w-full flex justify-end">
-                <Button className="" type="primary" onClick={handleSubmit}>
+                <Button className="mt-2" type="primary" onClick={handleSubmit}>
                   Create
                 </Button>
               </div>
