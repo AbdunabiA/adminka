@@ -47,7 +47,9 @@ const Main = ({
               validationField = Yup.object().typeError("Must be a object");
               break;
             case "number":
-              validationField = Yup.number().typeError("Must be a number");
+              validationField = Yup.number("Must be a number").typeError(
+                "Must be a number"
+              );
               break;
             case "array":
               validationField = Yup.array();

@@ -20,7 +20,14 @@ const create = () => {
       <Button
         className="mb-5"
         type="primary"
-        onClick={() => navigate("/banners")}
+        onClick={() =>
+          navigate({
+            pathname: "/banners",
+            search: qs.stringify({
+              ...params,
+            }),
+          })
+        }
       >
         Exit
       </Button>
@@ -46,7 +53,7 @@ const create = () => {
           {
             name: "type",
             type: "number",
-            required:true,
+            required: true,
           },
           {
             name: "file_id",

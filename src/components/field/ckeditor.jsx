@@ -4,7 +4,7 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 const ckeditor = ({ field: { name, value }, form: { setFieldValue }, label }) => {
   return (
-    <div>
+    <div className="mb-5 [&_.ck-rounded-coders]:min-h-[400px] [&_.ck-rounded-corders]:overflow-y-scroll">
       {label ? <h4>{label}</h4> : null}
       <CKEditor
         editor={ClassicEditor}
@@ -14,6 +14,7 @@ const ckeditor = ({ field: { name, value }, form: { setFieldValue }, label }) =>
           // You can store the "editor" and use when it is needed.
           console.log("Editor is ready to use!", editor);
         }}
+        config={{}}
         onChange={(event, editor) => {
           const data = editor.getData();
           setFieldValue(name, data);

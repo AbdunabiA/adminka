@@ -14,6 +14,9 @@ const CreatePage = lazy(() => import("pages/pages/create"));
 const UpdatePage = lazy(() => import("pages/pages/update"));
 const Menus = lazy(() => import("pages/menu"));
 const MenuItems = lazy(()=>import('pages/menu-items'))
+const Markets = lazy(() => import('pages/markets'))
+const CreateMarket = lazy(() => import("pages/markets/create"));
+const UpdateMarket = lazy(() => import("pages/markets/update"))
 
 
 const authRoutes = [
@@ -75,6 +78,18 @@ const privateRoutes = [
   {
     path: "/menu-items/:id",
     element: <MenuItems />,
+  },
+  {
+    path: "/markets",
+    element: <Markets />,
+  },
+  {
+    path: "/market/create",
+    element: <CreateMarket />,
+  },
+  {
+    path: "/market/update/:id",
+    element: <UpdateMarket />,
   },
 ];
 

@@ -20,7 +20,14 @@ const update = () => {
         <Button
           className="mb-5"
           type="primary"
-          onClick={() => navigate("/banners")}
+          onClick={() =>
+            navigate({
+              pathname: "/banners",
+              search: qs.stringify({
+                ...params,
+              }),
+            })
+          }
         >
           Exit
         </Button>
@@ -43,7 +50,11 @@ const update = () => {
             }}
             onSuccess={() => {
               notification.success({
-                message: get(item, `name_${get(params, "lang", currentLangCode)}`)!==null ? "Updated" : 'Created',
+                message:
+                  get(item, `name_${get(params, "lang", currentLangCode)}`) !==
+                  null
+                    ? "Updated"
+                    : "Created",
               });
             }}
             fields={[
@@ -113,7 +124,7 @@ const update = () => {
                   >
                     {get(item, `name_${get(params, "lang", currentLangCode)}`)
                       ? "Change"
-                      : 'Create'}
+                      : "Create"}
                   </Button>
                 </div>
               </>

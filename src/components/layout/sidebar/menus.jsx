@@ -26,6 +26,11 @@ const menus = [
     icon: <PicCenterOutlined />,
     label: "Menus",
   },
+  {
+    key: "markets",
+    icon: <PicCenterOutlined />,
+    label: "Markets",
+  },
 ];
 
 export default menus;

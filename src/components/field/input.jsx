@@ -6,10 +6,11 @@ const TextInput = ({
   label,
   required = false,
   placeholder,
-  form: { setFieldValue,setFieldTouched, errors, touched },
+  form: { setFieldValue, setFieldTouched, errors, touched },
+  className,
 }) => {
   return (
-    <div className="mb-2">
+    <div className={className}>
       {label ? <h4>{label}</h4> : null}
       <Input
         name={field.name}

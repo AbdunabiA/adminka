@@ -58,6 +58,10 @@ const index = () => {
           return (
             <div className="overflow-x-auto">
             <Table
+              // scroll={{
+              //   x: 0,
+              // }}
+              className="overflow-x-auto"
               pagination={{
                 total: get(meta, "total"),
                 current: +get(params, "page", 1),

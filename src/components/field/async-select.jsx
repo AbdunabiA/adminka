@@ -1,8 +1,9 @@
-import { useGet } from 'crud';
 import { get } from 'lodash';
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useSelector } from 'react-redux';
 import { AsyncPaginate } from 'react-select-async-paginate'
 import { api, queryBuilder } from 'services';
+import { systemSelectors } from 'store/system';
 
 const asyncSelect = ({
   field: { value, name },
@@ -11,24 +12,41 @@ const asyncSelect = ({
   optionLabel,
   optionValue,
   loadOptionsUrl,
-  loadOptionsParams,
-  menuPlacement='bottom',
-  isMulti,
+  loadOptionsParams = {},
+  menuPlacement = "bottom",
+  isMulti = false,
   placeholder,
+  className,
+  disabled = false,
+  isSearchable = false,
 }) => {
-  const loadOptions = async () => {
-    const data = await api.get(queryBuilder(loadOptionsUrl, loadOptionsParams));
-    // console.log(data.data);
+  const currentLangCode = useSelector(systemSelectors.selectLanguage);
+  const loadOptions = async (search, loadedOptions, { page }) => {
+    let data = await api.get(queryBuilder(loadOptionsUrl, loadOptionsParams));
+    
     return {
-      options: get(data, "data.data", []),
-      hasMore: get(data, "data.current_page", 1) < get(data, "data.last_page", 1),
-      addictional: { page: get(data, "current_page", 1) },
+      options: search
+        ? get(data, "data.data", []).filter((item) =>
+            item[`name_${currentLangCode}`]
+              .toLowerCase()
+              .includes(search.toLowerCase())
+          )
+        : get(data, "data.data", []),
+      hasMore: page < get(data, "data.last_page", 1),
+      additional: { page: page + 1 },
     };
   };
+  // useEffect(() => {
+  //   loadOptions()
+  // }, [loadOptionsParams?.filter?.region_id]);
+  // const styles = {}
   return (
-    <div className="mt-2">
+    <div className={className}>
       {label ? <h4>{label}</h4> : null}
       <AsyncPaginate
+        key={loadOptionsParams?.filter?.region_id}
+        isSearchable={isSearchable}
+        isDisabled={disabled}
         name={name}
         value={value}
         isMulti={isMulti}
@@ -46,13 +64,13 @@ const asyncSelect = ({
         loadOptions={loadOptions}
         additional={{ page: 1 }}
         onChange={(option) => {
-          // console.log(option);
+          console.log(option);
           setFieldValue(name, option);
         }}
         menuPlacement={menuPlacement}
         // onInputChange={(e)=>console.log(e)}
         onBlur={() => setFieldTouched(name, true)}
-        on
+        placeholder={placeholder}
       />
     </div>
   );

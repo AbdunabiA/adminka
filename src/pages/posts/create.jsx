@@ -17,7 +17,14 @@ const create = () => {
       <Button
         className="mb-5"
         type="primary"
-        onClick={() => navigate("/posts")}
+        onClick={() =>
+          navigate({
+            pathname: "/posts",
+            search: qs.stringify({
+              ...params,
+            }),
+          })
+        }
       >
         Exit
       </Button>
@@ -49,11 +56,11 @@ const create = () => {
           {
             name: "document_ids",
             type: "array",
-            onSubmitValue:(value)=>{
-              return value.reduce((acc, el)=>{
-                return [...acc, el.id]
-              }, [])
-            }
+            onSubmitValue: (value) => {
+              return value.reduce((acc, el) => {
+                return [...acc, el.id];
+              }, []);
+            },
           },
           {
             name: "status",
